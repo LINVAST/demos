@@ -1,0 +1,107 @@
+{
+    "name": "linvast-codemigration",
+    "displayName": "LINVAST Code Migration",
+    "description": "Migrate selected Java snippets or Java files to Go using the LINVAST CodeMigration demo.",
+    "version": "0.1.0",
+    "publisher": "linvast",
+    "license": "GPL-3.0-only",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/LINVAST/LINVAST.git",
+        "directory": "demos/CodeMigration/plugin"
+    },
+    "bugs": {
+        "url": "https://github.com/LINVAST/LINVAST/issues"
+    },
+    "engines": {
+        "vscode": "^1.94.0"
+    },
+    "categories": [
+        "Other"
+    ],
+    "icon": "images/icon.png",
+    "activationEvents": [
+        "onCommand:linvast-codemigration.migrateFile",
+        "onCommand:linvast-codemigration.migrateSelection"
+    ],
+    "main": "./dist/extension.js",
+    "contributes": {
+        "commands": [
+            {
+                "command": "linvast-codemigration.migrateFile",
+                "title": "LINVAST: Migrate Java File to Go",
+                "category": "LINVAST Code Migration"
+            },
+            {
+                "command": "linvast-codemigration.migrateSelection",
+                "title": "LINVAST: Migrate Selected Java to Go",
+                "category": "LINVAST Code Migration"
+            }
+        ],
+        "menus": {
+            "editor/context": [
+                {
+                    "command": "linvast-codemigration.migrateFile",
+                    "when": "resourceLangId == java"
+                },
+                {
+                    "command": "linvast-codemigration.migrateSelection",
+                    "when": "resourceLangId == java && editorHasSelection"
+                }
+            ],
+            "explorer/context": [
+                {
+                    "command": "linvast-codemigration.migrateFile",
+                    "when": "resourceExtname == .java"
+                }
+            ]
+        },
+        "configuration": {
+            "title": "LINVAST Code Migration",
+            "properties": {
+                "linvastCodeMigration.binaryPath": {
+                    "type": "string",
+                    "default": "",
+                    "description": "Path to the published CodeMigration binary (CodeMigration.exe / CodeMigration). If empty, the extension looks for a dotnet-built binary relative to the workspace."
+                },
+                "linvastCodeMigration.outputMode": {
+                    "type": "string",
+                    "enum": [
+                        "newTab",
+                        "replaceSelection",
+                        "diff"
+                    ],
+                    "default": "newTab",
+                    "description": "Where to place the generated Go code: new editor tab, replace the selection, or open a diff editor."
+                },
+                "linvastCodeMigration.dotnetPath": {
+                    "type": "string",
+                    "default": "dotnet",
+                    "description": "Path to the dotnet executable used to run the CodeMigration assembly when a published binary is not available."
+                },
+                "linvastCodeMigration.projectPath": {
+                    "type": "string",
+                    "default": "",
+                    "description": "Absolute path to the CodeMigration.csproj. Defaults to the csproj next to the extension (../../CodeMigration.csproj)."
+                }
+            }
+        }
+    },
+    "scripts": {
+        "vscode:prepublish": "npm run compile",
+        "compile": "tsc -p ./",
+        "watch": "tsc -watch -p ./",
+        "lint": "eslint src --ext .ts"
+    },
+    "devDependencies": {
+        "@types/node": "^20.0.0",
+        "@types/vscode": "^1.94.0",
+        "@typescript-eslint/eslint-plugin": "^8.0.0",
+        "@typescript-eslint/parser": "^8.0.0",
+        "eslint": "^9.0.0",
+        "typescript": "^5.0.0"
+    },
+    "dependencies": {
+        "@vscode/vsce": "^4.0.0"
+    }
+}

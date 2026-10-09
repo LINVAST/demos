@@ -1,0 +1,9 @@
+src
+node_modules
+.git
+**/*.map
+**/*.md
+eslint.config.js
+build.sh
+build/
+*.pdb

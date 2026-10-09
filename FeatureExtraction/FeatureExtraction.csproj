@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\LINVAST\LINVAST\LINVAST.csproj" />
+    <ProjectReference Include="..\..\LINVAST\LINVAST.Imperative\LINVAST.Imperative.csproj" />
+    <ProjectReference Include="..\..\LINVAST\LINVAST.Imperative.Visitors\LINVAST.Imperative.Visitors.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Samples\**\*.*" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+</Project>
