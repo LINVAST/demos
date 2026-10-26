@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Linq;
 using LINVAST.Imperative;
+using LINVAST.Imperative.Builders.Java;
 using LINVAST.Imperative.Nodes;
 using LINVAST.Nodes;
 
@@ -35,7 +36,7 @@ internal static class Program
 
         if (args.Length == 1 && args[0] == "--migrate-stdin")
         {
-            ASTNode ast = factory.BuildFromSource(Console.In.ReadToEnd());
+            ASTNode ast = new JavaASTBuilder().BuildFromSource(Console.In.ReadToEnd());
             SourceNode source = ast.As<SourceNode>();
             string goCode = generator.Generate(source);
             Console.Write(goCode);

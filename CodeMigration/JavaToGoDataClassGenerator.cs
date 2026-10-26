@@ -12,6 +12,7 @@ namespace LINVAST.Demos.CodeMigration;
 public sealed class JavaToGoDataClassGenerator : BaseASTVisitor<string>
 {
     private readonly StringBuilder _output = new();
+    private readonly HashSet<string> _privateFields = new(StringComparer.Ordinal);
     private string _className = string.Empty;
     private int _indentLevel;
     private int _blockDepth;
@@ -25,6 +26,7 @@ public sealed class JavaToGoDataClassGenerator : BaseASTVisitor<string>
         _className = string.Empty;
         _indentLevel = 0;
         _blockDepth = 0;
+        _privateFields.Clear();
 
         _output.AppendLine("package main");
         _output.AppendLine();
@@ -72,26 +74,31 @@ public sealed class JavaToGoDataClassGenerator : BaseASTVisitor<string>
 
         _className = typeDecl.Identifier;
 
-        var fields = new List<(string GoType, string GoName)>();
+        var fields = new List<(string GoType, string GoName, bool IsPrivate)>();
         foreach (var decl in typeDecl.Declarations)
         {
             var firstDecl = decl.DeclaratorList.Declarators.FirstOrDefault();
+            bool isPrivate = decl.Specifiers.Modifiers.AccessModifiers == AccessModifiers.Private;
             if (firstDecl is VarDeclNode varDecl)
             {
                 string goType = MapType(decl.Specifiers.TypeName);
-                string goName = ToGoFieldName(varDecl.Identifier);
-                fields.Add((goType, goName));
+                string goName = ToGoFieldName(varDecl.Identifier, isPrivate);
+                fields.Add((goType, goName, isPrivate));
+                if (isPrivate)
+                    _privateFields.Add(varDecl.Identifier);
             }
             else if (firstDecl is ArrDeclNode arrDecl)
             {
                 string goType = MapType(decl.Specifiers.TypeName);
-                string goName = ToGoFieldName(arrDecl.Identifier);
-                fields.Add((goType, goName));
+                string goName = ToGoFieldName(arrDecl.Identifier, isPrivate);
+                fields.Add((goType, goName, isPrivate));
+                if (isPrivate)
+                    _privateFields.Add(arrDecl.Identifier);
             }
         }
 
         _output.AppendLine($"type {_className} struct {{");
-        foreach (var (goType, goName) in fields)
+        foreach (var (goType, goName, _) in fields)
             _output.AppendLine($"    {goName} {goType}");
         _output.AppendLine("}");
         _output.AppendLine();
@@ -437,7 +444,7 @@ public sealed class JavaToGoDataClassGenerator : BaseASTVisitor<string>
         if (name.StartsWith("this."))
         {
             string fieldName = name[5..];
-            return $"p.{ToGoFieldName(fieldName)}";
+            return $"p.{ToGoFieldName(fieldName, _privateFields.Contains(fieldName))}";
         }
 
         if (name == "this")
@@ -486,10 +493,12 @@ public sealed class JavaToGoDataClassGenerator : BaseASTVisitor<string>
         };
     }
 
-    private static string ToGoFieldName(string javaName)
+    private static string ToGoFieldName(string javaName, bool isPrivate)
     {
         if (string.IsNullOrEmpty(javaName))
             return javaName;
+        if (isPrivate)
+            return char.ToLower(javaName[0]) + javaName[1..];
         return char.ToUpper(javaName[0]) + javaName[1..];
     }
 
