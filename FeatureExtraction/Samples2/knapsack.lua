@@ -1,4 +1,4 @@
--- Knapsack problem using dynamic programming
+-- Knapsack algorithm
 
 local function max(a, b)
     if a > b then
@@ -20,9 +20,9 @@ local function knapsack(values, weights, capacity)
     for i = 1, n do
         for w = 0, capacity do
             if weights[i] <= w then
-                dp[i][w] = max(dp[i-1][w], dp[i-1][w-weights[i]] + values[i])
+                dp[i][w] = max(dp[i - 1][w], dp[i - 1][w - weights[i]] + values[i])
             else
-                dp[i][w] = dp[i-1][w]
+                dp[i][w] = dp[i - 1][w]
             end
         end
     end
