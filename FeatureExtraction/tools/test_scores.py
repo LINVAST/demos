@@ -1,4 +1,4 @@
-"""Run with python3 -m unittest test_scores.py."""
+"""Run with python3 -m unittest discover -s tools -p 'test_*.py'."""
 import csv
 import io
 import json

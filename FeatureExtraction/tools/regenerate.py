@@ -9,7 +9,8 @@ import subprocess
 import sys
 import tempfile
 
-ROOT = Path(__file__).resolve().parent
+TOOLS = Path(__file__).resolve().parent
+ROOT = TOOLS.parent
 
 def run(*args, **kwargs):
     return subprocess.run(args, cwd=ROOT, check=True, **kwargs)
@@ -19,7 +20,7 @@ def main():
         '-m:1', '-p:UseSharedCompilation=false', '--nologo')
     dll = str(ROOT / '.artifacts/bin/FeatureExtraction/debug/FeatureExtraction.dll')
     run('dotnet', dll, '--self-test')
-    run(sys.executable, '-m', 'unittest', 'test_scores.py')
+    run(sys.executable, '-m', 'unittest', 'discover', '-s', str(TOOLS), '-p', 'test_*.py')
     samples = str(ROOT / 'Samples')
     first = run('dotnet', dll, samples, capture_output=True).stdout
     second = run('dotnet', dll, samples, capture_output=True).stdout
@@ -34,8 +35,8 @@ def main():
         raise RuntimeError('Expected exactly one row per corpus source')
     with tempfile.TemporaryDirectory() as directory:
         stats = Path(directory) / 'statistics.json'
-        scores = run(sys.executable, 'complexity_scores.py', '--stats', str(stats), input=first, capture_output=True).stdout
-        repeat = run(sys.executable, 'complexity_scores.py', input=second, capture_output=True).stdout
+        scores = run(sys.executable, str(TOOLS / 'complexity_scores.py'), '--stats', str(stats), input=first, capture_output=True).stdout
+        repeat = run(sys.executable, str(TOOLS / 'complexity_scores.py'), input=second, capture_output=True).stdout
         if scores != repeat:
             raise RuntimeError('Scores are not deterministic')
         revision = run('git', '-C', '../../LINVAST', 'rev-parse', 'HEAD', capture_output=True, text=True).stdout.strip()

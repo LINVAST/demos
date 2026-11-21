@@ -1,0 +1,5 @@
+#!/bin/sh
+# Build, validate, and regenerate this demo with the local development LINVAST.
+set -eu
+demo_dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+exec python3 "$demo_dir/tools/regenerate.py" "$@"

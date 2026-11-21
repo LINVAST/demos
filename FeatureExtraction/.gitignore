@@ -1,0 +1,6 @@
+# Generated CSV results and logs
+*.csv
+*.log
+
+# Feature extraction CSV uses a .txt extension
+/out.txt
