@@ -10,3 +10,5 @@ def py_valid_mountain(arr):
     while i + 1 < n and arr[i] > arr[i + 1]:
         i = i + 1
     return i == n - 1
+
+

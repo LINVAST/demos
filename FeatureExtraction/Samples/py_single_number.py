@@ -3,3 +3,5 @@ def py_single_number(arr):
     for v in arr:
         result = result ^ v
     return result
+
+

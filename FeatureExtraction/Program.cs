@@ -10,9 +10,16 @@ namespace LINVAST.Demos.FeatureExtraction;
 
 internal static class Program
 {
-    private static int Main()
+    private static int Main(string[] args)
     {
-        string samplesDir = Path.Combine(AppContext.BaseDirectory, "Samples");
+        if (args.SequenceEqual(new[] { "--self-test" }))
+            return RegressionChecks.Run();
+        if (args.Length > 1)
+        {
+            Console.Error.WriteLine("Usage: FeatureExtraction [samples-directory | --self-test]");
+            return 1;
+        }
+        string samplesDir = args.Length == 1 ? args[0] : Path.Combine(AppContext.BaseDirectory, "Samples");
         var factory = new ImperativeASTFactory();
 
         var fileMap = new (string Language, string Ext)[]
@@ -27,10 +34,12 @@ internal static class Program
 
         var rows = new List<CsvRow>();
 
-        foreach (string filePath in Directory.GetFiles(samplesDir))
+        bool failed = false;
+        foreach (string filePath in Directory.GetFiles(samplesDir).OrderBy(p => p, StringComparer.Ordinal))
         {
             string ext = Path.GetExtension(filePath);
-            string language = Path.GetFileNameWithoutExtension(filePath);
+            string? language = fileMap.FirstOrDefault(entry => entry.Ext == ext).Language;
+            if (language is null) continue;
 
             try
             {
@@ -41,10 +50,12 @@ internal static class Program
             }
             catch (Exception ex)
             {
+                failed = true;
                 Console.Error.WriteLine($"Error processing {filePath}: {ex.Message}");
             }
         }
 
+        if (failed) return 1;
         Console.WriteLine(CsvRow.GetHeader());
         foreach (CsvRow row in rows)
             Console.WriteLine(row.ToCsv());
@@ -52,7 +63,7 @@ internal static class Program
         return 0;
     }
 
-    private static IEnumerable<CsvRow> ExtractFunctions(ASTNode ast, string language, string fileName, string ext)
+    internal static IEnumerable<CsvRow> ExtractFunctions(ASTNode ast, string language, string fileName, string ext)
     {
         foreach (ASTNode child in ast.Children)
         {

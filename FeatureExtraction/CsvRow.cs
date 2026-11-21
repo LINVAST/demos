@@ -73,12 +73,12 @@ public sealed class CsvRow
             Language = language,
             SourceFile = sourceFile,
             FunctionName = functionName,
-            ReturnType = returnType,
-            ParamType1 = paramTypes.Length > 0 ? paramTypes[0] : "",
-            ParamType2 = paramTypes.Length > 1 ? paramTypes[1] : "",
-            ParamType3 = paramTypes.Length > 2 ? paramTypes[2] : "",
-            ParamType4 = paramTypes.Length > 3 ? paramTypes[3] : "",
-            ParamType5 = paramTypes.Length > 4 ? paramTypes[4] : "",
+            ReturnType = TypeLabel(language, returnType),
+            ParamType1 = paramTypes.Length > 0 ? TypeLabel(language, paramTypes[0]) : "",
+            ParamType2 = paramTypes.Length > 1 ? TypeLabel(language, paramTypes[1]) : "",
+            ParamType3 = paramTypes.Length > 2 ? TypeLabel(language, paramTypes[2]) : "",
+            ParamType4 = paramTypes.Length > 3 ? TypeLabel(language, paramTypes[3]) : "",
+            ParamType5 = paramTypes.Length > 4 ? TypeLabel(language, paramTypes[4]) : "",
 
             TotalNodes = extractor.TotalNodes,
             MaxDepth = extractor.MaxDepth,
@@ -116,6 +116,13 @@ public sealed class CsvRow
 
         return row;
     }
+
+    // These AST labels do not retain annotation provenance. Be conservative about
+    // defaults, including Python's ambiguous object/Any annotation representation.
+    private static string TypeLabel(string language, string label) =>
+        string.IsNullOrWhiteSpace(label) || language == "Lua"
+        || (language == "Python" && (label == "void" || label == "object"))
+            ? "unknown" : label;
 
     public static string GetHeader() =>
         "Language,SourceFile,FunctionName,ReturnType,ParamType1,ParamType2,ParamType3,ParamType4,ParamType5,"

@@ -4,3 +4,5 @@ def py_contains_duplicate(arr):
             if arr[i] == arr[j]:
                 return True
     return False
+
+

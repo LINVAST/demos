@@ -6,3 +6,5 @@ def py_find_peak_element(arr):
         if left_ok and right_ok:
             return i
     return -1
+
+

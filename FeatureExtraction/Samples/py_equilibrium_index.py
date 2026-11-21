@@ -9,3 +9,5 @@ def py_equilibrium_index(arr):
             return i
         left = left + arr[i]
     return -1
+
+

@@ -6,3 +6,5 @@ def py_group_consecutive_count(arr):
         if arr[i] != arr[i - 1]:
             groups = groups + 1
     return groups
+
+

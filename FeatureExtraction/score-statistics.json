@@ -1,0 +1,36 @@
+{
+  "description": "Illustrative composite structural score",
+  "row_count": 120,
+  "ddof": 0,
+  "zero_variance": "zero z-score contribution",
+  "features": {
+    "CyclomaticComplexity": {
+      "weight": 0.4,
+      "mean": 3.4166666666666665,
+      "population_stddev": 1.3939352766737614
+    },
+    "MaxDepth": {
+      "weight": 0.25,
+      "mean": 9.041666666666666,
+      "population_stddev": 1.588478482349978
+    },
+    "TotalNodes": {
+      "weight": 0.2,
+      "mean": 57.15833333333333,
+      "population_stddev": 25.513720437355968
+    },
+    "FuncCallCount": {
+      "weight": 0.1,
+      "mean": 0.775,
+      "population_stddev": 1.1065147988165365
+    },
+    "ArrAccessExprCount": {
+      "weight": 0.05,
+      "mean": 1.4,
+      "population_stddev": 1.8770544300401448
+    }
+  },
+  "linvast_revision": "1cefa1e4b4aad40c172054a0851e88a29716121b",
+  "linvast_worktree_dirty": false,
+  "dependency_source": "local development checkout; UseLocalLinvast=true"
+}

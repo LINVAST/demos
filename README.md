@@ -21,7 +21,7 @@ regardless of the input language.
 
 ```
 demos/
-├── Demos.sln                 # Visual Studio solution pulling in LINVAST libs + demos
+├── Demos.sln                 # Visual Studio solution for demos (LINVAST selected at build time)
 ├── CodeMigration/            # Java → Go code migration
 │   ├── Program.cs
 │   ├── JavaToGoDataClassGenerator.cs
@@ -69,16 +69,20 @@ dotnet run --project FeatureExtraction/FeatureExtraction.csproj
 ```
 
 Reads every file in `FeatureExtraction/Samples/` and writes a CSV table (one
-row per function/method) to stdout, covering 6 languages:
+row per function/method) to stdout, covering 6 languages.
 
-| File | Language |
-|------|----------|
-| `quicksort.c` | C |
-| `binarytree.java` | Java |
-| `dijkstra.go` | Go |
-| `fibonacci.py` | Python |
-| `gcd.kt` | Kotlin |
-| `knapsack.lua` | Lua |
+The corpus contains 120 single-function samples (20 per language across C,
+Lua, Go, Java, Kotlin and Python), with no algorithm concept repeated across
+languages:
+
+| Language | Files | Algorithm domain |
+|---|---|---|
+| C | 20 | Sorting &amp; searching (bubble, selection, insertion, quicksort, shell, comb, linear/binary search) plus classic recursion (factorial, fibonacci, gcd, is_prime) and array patterns (kadane, inversions, rotate, dedup, peak, majority) |
+| Lua | 20 | String processing (length, reverse, palindrome, vowel/consonant/word/digit/space counts, char codes, case checks, mid/double chars) |
+| Go | 20 | Number theory &amp; integer math (lcm, perfect square/number, divisors, armstrong, numeric palindrome, strong/automorphic/harshad numbers, catalan, binomial coeff, triangular, digital root, digit sums) |
+| Java | 20 | Array aggregation &amp; statistics (sum, average, max, min, product, even/odd/pos/neg/zero counts, first/last index, shift left/right, move zeros, prefix sum, dedup, second largest, min index, adjacent dup) |
+| Kotlin | 20 | Sequence transformation (reverse, copy, running sum/product, alternating sum, adjacent diff, clamp, rank, sign changes, longest runs, duplicates, parity split, zip/dot/convolution sum, moving max/min, equilibrium index, contains dup) |
+| Python | 20 | List algorithms (dedup preserve order, first non-repeating, frequency mode, group consecutive, rotate, partition by pivot, missing number, two-sum, majority, equilibrium, trap water, max consecutive ones, disappeared numbers, single number, intersection, contains dup, valid mountain, sorted rotated, max profit, find peak) |
 
 Metrics include total AST nodes, max nesting depth, identifier count, branch/loop
 counts, cyclomatic complexity, and recursion detection.
@@ -118,3 +122,22 @@ Open `Demos.sln` in Visual Studio, or build a single project:
 dotnet build Demos.sln
 ```
 
+
+## LINVAST dependency selection
+
+Builds use exactly **3.0.0** of each required LINVAST NuGet package by default,
+even when a neighboring source checkout exists. This applies to Debug and Release.
+
+Opt into the neighboring `LINVAST` source checkout for development:
+
+```sh
+dotnet build Demos.sln -p:UseLocalLinvast=true
+```
+
+Local mode requires all referenced projects at their existing relative paths and
+fails clearly if any are missing. It uses checkout changes directly without a
+package version pin. Use `-p:UseLocalLinvast=false` to explicitly select packages.
+
+Use the same property for `dotnet run` or `dotnet publish`. If restoring separately,
+pass the same selection to both restore and build/publish; restore again when
+switching dependency modes before using `--no-restore`.

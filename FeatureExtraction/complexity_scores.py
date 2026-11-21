@@ -2,6 +2,8 @@
 import argparse
 import csv
 import sys
+import json
+import math
 
 DEFAULT_WEIGHTS = {
     "CyclomaticComplexity": 0.40,
@@ -22,12 +24,14 @@ def parse_weight(value):
         weight = float(weight_text)
     except ValueError:
         sys.exit(f"Invalid weight for '{feature}': '{weight_text}' is not a number")
+    if not math.isfinite(weight) or weight < 0:
+        sys.exit("Weights must be finite and nonnegative")
     return feature, weight
 
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Compute weighted composite complexity scores from FeatureExtraction CSV."
+        description="Compute illustrative composite structural scores from FeatureExtraction CSV."
     )
     parser.add_argument(
         "--weight",
@@ -36,6 +40,7 @@ def main():
         help="Override the weight for a feature (repeatable). Defaults: "
         + ", ".join(f"{k}={v}" for k, v in DEFAULT_WEIGHTS.items()),
     )
+    parser.add_argument("--stats", help="Write normalization statistics as JSON to this path.")
     args = parser.parse_args()
 
     weights = dict(DEFAULT_WEIGHTS)
@@ -60,6 +65,8 @@ def main():
         for feature in weights:
             try:
                 row[feature] = float(row[feature])
+                if not math.isfinite(row[feature]):
+                    raise ValueError("nonfinite value")
             except (TypeError, ValueError):
                 sys.exit(
                     f"Invalid value for {feature} in "
@@ -83,7 +90,16 @@ def main():
             score += weight * z_score
         row["Score"] = score
 
-    rows.sort(key=lambda row: row["Score"], reverse=True)
+    rows.sort(key=lambda row: (-row["Score"], row["SourceFile"], row["FunctionName"]))
+    if args.stats:
+        with open(args.stats, "w", encoding="utf-8") as output:
+            json.dump({"description": "Illustrative composite structural score",
+                       "row_count": len(rows), "ddof": 0,
+                       "zero_variance": "zero z-score contribution",
+                       "features": {f: {"weight": w, "mean": stats[f][0],
+                                        "population_stddev": stats[f][1]}
+                                    for f, w in weights.items()}}, output, indent=2)
+            output.write("\n")
 
     writer = csv.writer(sys.stdout)
     writer.writerow(["Rank", "FunctionName", "SourceFile",

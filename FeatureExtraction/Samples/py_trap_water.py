@@ -15,3 +15,5 @@ def py_trap_water(arr):
         if level > arr[i]:
             total = total + level - arr[i]
     return total
+
+

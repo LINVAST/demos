@@ -7,3 +7,5 @@ def py_first_non_repeating(arr):
         if unique:
             return arr[i]
     return -1
+
+

@@ -7,11 +7,29 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
-  <ItemGroup>
+  <PropertyGroup>
+    <LocalLinvastAvailable Condition="Exists('$(MSBuildProjectDirectory)/../../LINVAST/LINVAST/LINVAST.csproj') And Exists('$(MSBuildProjectDirectory)/../../LINVAST/LINVAST.Imperative/LINVAST.Imperative.csproj') And Exists('$(MSBuildProjectDirectory)/../../LINVAST/LINVAST.Imperative.Visitors/LINVAST.Imperative.Visitors.csproj')">true</LocalLinvastAvailable>
+    <UseLocalLinvast Condition="'$(UseLocalLinvast)' == ''">false</UseLocalLinvast>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(UseLocalLinvast)' == 'true'">
     <ProjectReference Include="..\..\LINVAST\LINVAST\LINVAST.csproj" />
     <ProjectReference Include="..\..\LINVAST\LINVAST.Imperative\LINVAST.Imperative.csproj" />
     <ProjectReference Include="..\..\LINVAST\LINVAST.Imperative.Visitors\LINVAST.Imperative.Visitors.csproj" />
   </ItemGroup>
+
+  <ItemGroup Condition="'$(UseLocalLinvast)' == 'false'">
+    <PackageReference Include="LINVAST" Version="[3.0.0]" />
+    <PackageReference Include="LINVAST.Imperative" Version="[3.0.0]" />
+    <PackageReference Include="LINVAST.Imperative.Visitors" Version="[3.0.0]" />
+  </ItemGroup>
+
+  <Target Name="ValidateLinvastSource" BeforeTargets="CollectPackageReferences;PrepareForBuild">
+    <Error Condition="'$(UseLocalLinvast)' != 'true' And '$(UseLocalLinvast)' != 'false'"
+           Text="UseLocalLinvast must be true or false." />
+    <Error Condition="'$(UseLocalLinvast)' == 'true' And '$(LocalLinvastAvailable)' != 'true'"
+           Text="UseLocalLinvast=true requires all referenced LINVAST projects in the neighboring LINVAST checkout. Use -p:UseLocalLinvast=false to use version 3.0.0 packages." />
+  </Target>
 
   <ItemGroup>
     <None Include="Samples\**\*.*" CopyToOutputDirectory="PreserveNewest" />

@@ -10,3 +10,5 @@ def py_majority_element(arr):
         else:
             count = count - 1
     return cand
+
+

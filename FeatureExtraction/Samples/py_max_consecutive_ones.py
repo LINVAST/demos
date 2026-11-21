@@ -9,3 +9,5 @@ def py_max_consecutive_ones(arr):
         if cur > best:
             best = cur
     return best
+
+
