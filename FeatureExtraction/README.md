@@ -14,7 +14,7 @@ From this folder:
 
 `run-demo` can be invoked from any working directory. The Python helpers and C# regression checks live in `tools/`; generated result files remain in this folder.
 
-The script explicitly builds with `-p:UseLocalLinvast=true`, places all build artifacts (including dependency artifacts) under this folder, runs regression checks, verifies exactly 120 rows and 20 per language, and compares two extraction and scoring runs for identical output. It writes `out.txt` (CSV), `illustrative-scores.csv`, and `score-statistics.json`. `Samples2` is not part of this corpus. No paper files are generated. The previously deleted `out-scores.txt` is not restored.
+The script explicitly builds with `-p:UseLocalLinvast=true`, places all build artifacts (including dependency artifacts) under this folder, runs regression checks, verifies exactly 120 rows and 20 per language, and compares two extraction and scoring runs for identical output. It writes `features.csv` (CSV), `complexity-scores.csv`, and `score-statistics.json`. `Samples2` is not part of this corpus. No paper files are generated. The previously deleted `out-scores.txt` is not restored.
 
 The individual commands are:
 
@@ -22,8 +22,8 @@ The individual commands are:
 dotnet build -p:UseLocalLinvast=true --artifacts-path "$PWD/.artifacts" -m:1 -p:UseSharedCompilation=false
 dotnet .artifacts/bin/FeatureExtraction/debug/FeatureExtraction.dll --self-test
 python3 -m unittest discover -s tools -p 'test_*.py'
-dotnet .artifacts/bin/FeatureExtraction/debug/FeatureExtraction.dll Samples > out.txt
-python3 tools/complexity_scores.py --stats score-statistics.json < out.txt > illustrative-scores.csv
+dotnet .artifacts/bin/FeatureExtraction/debug/FeatureExtraction.dll Samples > features.csv
+python3 tools/complexity_scores.py --stats score-statistics.json < features.csv > complexity-scores.csv
 ```
 
 Use `tools/regenerate.py` to include dependency provenance in the statistics file. The executable accepts an optional samples-directory argument. Unsupported extensions are ignored; exceptions during extraction produce a nonzero exit code and no CSV. The parser may recover from some syntax errors without throwing; successful extraction does not establish source validity. Corpus completeness is enforced by the regeneration script.

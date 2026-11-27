@@ -2,5 +2,7 @@
 *.csv
 *.log
 
-# Feature extraction CSV uses a .txt extension
-/out.txt
+# Feature extraction CSV uses .csv extension
+/features.csv
+/complexity-scores.csv
+/score-statistics.json

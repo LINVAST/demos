@@ -44,8 +44,8 @@ def main():
         metadata = json.loads(stats.read_text())
         metadata.update(linvast_revision=revision, linvast_worktree_dirty=bool(dirty),
                         dependency_source='local development checkout; UseLocalLinvast=true')
-        (ROOT / 'out.txt').write_bytes(first)
-        (ROOT / 'illustrative-scores.csv').write_bytes(scores)
+        (ROOT / 'features.csv').write_bytes(first)
+        (ROOT / 'complexity-scores.csv').write_bytes(scores)
         (ROOT / 'score-statistics.json').write_text(json.dumps(metadata, indent=2) + '\n')
     print('Verified and regenerated 120 rows (20 per language), scores, and statistics.')
 

@@ -1,0 +1,20 @@
+#!/bin/sh
+# Run the Feature Complexity Scorer web visualizer
+
+set -e
+
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+WEB_DIR="$SCRIPT_DIR/web"
+PORT="${PORT:-8080}"
+
+if [ ! -d "$WEB_DIR" ]; then
+    echo "Error: web directory not found at $WEB_DIR"
+    exit 1
+fi
+
+echo "Starting Feature Complexity Scorer on http://localhost:$PORT"
+echo "Press Ctrl+C to stop"
+echo ""
+
+cd "$WEB_DIR"
+exec python3 -m http.server "$PORT"

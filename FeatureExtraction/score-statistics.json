@@ -7,30 +7,30 @@
     "CyclomaticComplexity": {
       "weight": 0.4,
       "mean": 3.4166666666666665,
-      "population_stddev": 1.3939352766737614
+      "population_stddev": 1.3939352766737616
     },
     "MaxDepth": {
       "weight": 0.25,
-      "mean": 9.041666666666666,
-      "population_stddev": 1.588478482349978
+      "mean": 9.025,
+      "population_stddev": 1.5888281845435654
     },
     "TotalNodes": {
       "weight": 0.2,
-      "mean": 57.15833333333333,
-      "population_stddev": 25.513720437355968
+      "mean": 57.13333333333333,
+      "population_stddev": 25.51435325894471
     },
     "FuncCallCount": {
       "weight": 0.1,
-      "mean": 0.775,
-      "population_stddev": 1.1065147988165365
+      "mean": 0.7666666666666667,
+      "population_stddev": 1.1010096376609164
     },
     "ArrAccessExprCount": {
       "weight": 0.05,
       "mean": 1.4,
-      "population_stddev": 1.8770544300401448
+      "population_stddev": 1.8770544300401433
     }
   },
-  "linvast_revision": "1cefa1e4b4aad40c172054a0851e88a29716121b",
-  "linvast_worktree_dirty": false,
+  "linvast_revision": "20798a45af4a5f75c3933357637376bcdff05dd0",
+  "linvast_worktree_dirty": true,
   "dependency_source": "local development checkout; UseLocalLinvast=true"
 }
