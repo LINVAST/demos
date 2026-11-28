@@ -125,10 +125,8 @@ dotnet build Demos.sln
 
 ## LINVAST dependency selection
 
-Builds use exactly **3.0.0** of each required LINVAST NuGet package by default,
-even when a neighboring source checkout exists. This applies to Debug and Release.
-
-Opt into the neighboring `LINVAST` source checkout for development:
+Builds use LINVAST NuGet packages by default in all configurations.
+Opt into the `LINVAST` source checkout for development:
 
 ```sh
 dotnet build Demos.sln -p:UseLocalLinvast=true

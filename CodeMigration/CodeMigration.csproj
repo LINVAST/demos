@@ -19,16 +19,16 @@
   </ItemGroup>
 
   <ItemGroup Condition="'$(UseLocalLinvast)' == 'false'">
-    <PackageReference Include="LINVAST" Version="[3.0.0]" />
-    <PackageReference Include="LINVAST.Imperative" Version="[3.0.0]" />
-    <PackageReference Include="LINVAST.Imperative.Visitors" Version="[3.0.0]" />
+    <PackageReference Include="LINVAST" Version="[3.1.0]" />
+    <PackageReference Include="LINVAST.Imperative" Version="[3.1.0]" />
+    <PackageReference Include="LINVAST.Imperative.Visitors" Version="[3.1.0]" />
   </ItemGroup>
 
   <Target Name="ValidateLinvastSource" BeforeTargets="CollectPackageReferences;PrepareForBuild">
     <Error Condition="'$(UseLocalLinvast)' != 'true' And '$(UseLocalLinvast)' != 'false'"
            Text="UseLocalLinvast must be true or false." />
     <Error Condition="'$(UseLocalLinvast)' == 'true' And '$(LocalLinvastAvailable)' != 'true'"
-           Text="UseLocalLinvast=true requires all referenced LINVAST projects in the neighboring LINVAST checkout. Use -p:UseLocalLinvast=false to use version 3.0.0 packages." />
+           Text="UseLocalLinvast=true requires all referenced LINVAST projects in the neighboring LINVAST checkout. Use -p:UseLocalLinvast=false to use version NuGet packages." />
   </Target>
 
   <ItemGroup>
